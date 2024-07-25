@@ -617,6 +617,13 @@ message StringRules {
   // IgnoreEmpty specifies that the validation rules of this field should be
   // evaluated only if the field is not empty
   optional bool ignore_empty = 26;
+
+  // Utf16ByteLen specifies that this field must be the specified number of UTF16 bytes.
+  optional uint64 utf16_byte_len = 27;
+  // MinUtf16ByteLen specifies that this field must be the specified number of UTF16 bytes at a minimum.
+  optional uint64 min_utf16_byte_len = 28;
+  // MaxUtf16ByteLen specifies that this field must be the specified number of UTF16 bytes at a maximum.
+  optional uint64 max_utf16_byte_len = 29;
 }
 
 // WellKnownRegex contain some well-known patterns.

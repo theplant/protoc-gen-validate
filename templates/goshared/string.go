@@ -45,6 +45,41 @@ const strTpl = `
 		}
 	{{ end }}
 
+	{{ if or $r.Utf16ByteLen (and $r.MinUtf16ByteLen $r.MaxUtf16ByteLen (eq $r.GetMinUtf16ByteLen $r.GetMaxUtf16ByteLen)) }}
+		{{ if $r.Utf16ByteLen }}
+		if 2*len(utf16.Encode([]rune({{ accessor . }}))) != {{ $r.GetUtf16ByteLen }} {
+			err := {{ err . "value length must be " $r.GetUtf16ByteLen " UTF16 byte length" }}
+			if !all { return err }
+			errors = append(errors, err)
+		{{ else }}
+		if 2*len(utf16.Encode([]rune({{ accessor . }}))) != {{ $r.GetMinUtf16ByteLen }} {
+			err := {{ err . "value length must be " $r.GetMinUtf16ByteLen " UTF16 byte length" }}
+			if !all { return err }
+			errors = append(errors, err)
+		{{ end }}
+	}
+	{{ else if $r.MinUtf16ByteLen }}
+		{{ if $r.MaxUtf16ByteLen }}
+			if l := 2*len(utf16.Encode([]rune({{ accessor . }}))); l < {{ $r.GetMinUtf16ByteLen }} || l > {{ $r.GetMaxUtf16ByteLen }} {
+				err := {{ err . "value length must be between " $r.GetMinUtf16ByteLen " and " $r.GetMaxUtf16ByteLen " UTF16 byte length, inclusive" }}
+				if !all { return err }
+				errors = append(errors, err)
+			}
+		{{ else }}
+			if 2*len(utf16.Encode([]rune({{ accessor . }}))) < {{ $r.GetMinUtf16ByteLen }} {
+				err := {{ err . "value length must be at least " $r.GetMinUtf16ByteLen " UTF16 byte length" }}
+				if !all { return err }
+				errors = append(errors, err)
+			}
+		{{ end }}
+	{{ else if $r.MaxUtf16ByteLen }}
+		if 2*len(utf16.Encode([]rune({{ accessor . }}))) > {{ $r.GetMaxUtf16ByteLen }} {
+			err := {{ err . "value length must be at most " $r.GetMaxUtf16ByteLen " UTF16 byte length" }}
+			if !all { return err }
+			errors = append(errors, err)
+		}
+	{{ end }}
+
 	{{ if or $r.LenBytes (and $r.MinBytes $r.MaxBytes (eq $r.GetMinBytes $r.GetMaxBytes)) }}
 		{{ if $r.LenBytes }}
 			if len({{ accessor . }}) != {{ $r.GetLenBytes }} {

@@ -17,6 +17,7 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+	"unicode/utf16"
 
 	"google.golang.org/protobuf/types/known/anypb"
 
@@ -31,6 +32,7 @@ var (
 	_ = errors.New("")
 	_ = fmt.Print
 	_ = utf8.UTFMax
+	_ = utf16.Encode([]rune(""))
 	_ = (*regexp.Regexp)(nil)
 	_ = (*strings.Reader)(nil)
 	_ = net.IPv4len
